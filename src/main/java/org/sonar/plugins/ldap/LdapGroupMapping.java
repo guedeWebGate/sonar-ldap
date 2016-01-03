@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
 import org.sonar.api.utils.SonarException;
+import org.sonar.api.utils.log.Loggers;
 
 /**
  * @author Evgeny Mandrikov
@@ -43,8 +44,10 @@ public class LdapGroupMapping {
   private final String idAttribute;
   private final String request;
   private final String[] requiredUserAttributes;
+  private final boolean acceptBlankDN;
 
-  /**
+
+/**
    * Constructs mapping from Sonar settings.
    */
   public LdapGroupMapping(Settings settings, String settingsPrefix) {
@@ -53,7 +56,12 @@ public class LdapGroupMapping {
 
     String objectClass = settings.getString(settingsPrefix + ".group.objectClass");
     String memberAttribute = settings.getString(settingsPrefix + ".group.memberAttribute");
+    acceptBlankDN = settings.getBoolean(settingsPrefix +".group.acceptBlankDn");
+    if (acceptBlankDN) {
+        Loggers.get(LdapGroupMapping.class).info("acceptBlankDN: {}", acceptBlankDN);    	
+    }
 
+    
     String req;
     if (StringUtils.isNotBlank(objectClass) || StringUtils.isNotBlank(memberAttribute)) {
       // For backward compatibility with plugin versions 1.1 and 1.1.1
@@ -137,6 +145,13 @@ public class LdapGroupMapping {
    */
   public String[] getRequiredUserAttributes() {
     return requiredUserAttributes;
+  }
+  /**
+   * Accept a blank baseDn for groups to support some special configurations, like Domino LDAP has
+   * @return
+   */
+  public boolean acceptBlankDN() {
+	return acceptBlankDN;
   }
 
   @Override

@@ -54,7 +54,9 @@ public class LdapUserMapping {
     }
 
     acceptBlankDN = settings.getBoolean(settingsPrefix +".user.acceptBlankDn");
-    Loggers.get(LdapUserMapping.class).info("acceptBlankDN: {}", acceptBlankDN);
+    if (acceptBlankDN) {
+        Loggers.get(LdapUserMapping.class).info("acceptBlankDN: {}", acceptBlankDN);    	
+    }
     String objectClass = settings.getString(settingsPrefix + ".user.objectClass");
     String loginAttribute = settings.getString(settingsPrefix + ".user.loginAttribute");
 
@@ -120,6 +122,13 @@ public class LdapUserMapping {
   public String getEmailAttribute() {
     return emailAttribute;
   }
+  /**
+   * Accept a blank baseDn for groups to support some special configurations, like Domino LDAP has
+   * @return
+   */
+  public boolean acceptBlankDN() {
+	  return acceptBlankDN;
+  }
 
   @Override
   public String toString() {
@@ -129,10 +138,6 @@ public class LdapUserMapping {
       .add("realNameAttribute", getRealNameAttribute())
       .add("emailAttribute", getEmailAttribute())
       .toString();
-  }
-
-  public boolean isAcceptBlankDN() {
-	  return acceptBlankDN;
   }
 
 }
