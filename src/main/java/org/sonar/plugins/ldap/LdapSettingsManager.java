@@ -71,7 +71,7 @@ public class LdapSettingsManager implements ServerExtension {
       if (serverKeys.length > 0) {
         for (String serverKey : serverKeys) {
           LdapUserMapping userMapping = new LdapUserMapping(settings, LDAP_PROPERTY_PREFIX + "." + serverKey);
-          if (StringUtils.isNotBlank(userMapping.getBaseDn())) {
+          if (StringUtils.isNotBlank(userMapping.getBaseDn()) || userMapping.isAcceptBlankDN()) {
             LOG.info("User mapping for server {}: {}", serverKey, userMapping);
             userMappings.put(serverKey, userMapping);
           } else {
@@ -81,7 +81,7 @@ public class LdapSettingsManager implements ServerExtension {
       } else {
         // Backward compatibility with single server configuration
         LdapUserMapping userMapping = new LdapUserMapping(settings, LDAP_PROPERTY_PREFIX);
-        if (StringUtils.isNotBlank(userMapping.getBaseDn())) {
+        if (StringUtils.isNotBlank(userMapping.getBaseDn()) || userMapping.isAcceptBlankDN()) {
           LOG.info("User mapping: {}", userMapping);
           userMappings.put(DEFAULT_LDAP_SERVER_KEY, userMapping);
         } else {

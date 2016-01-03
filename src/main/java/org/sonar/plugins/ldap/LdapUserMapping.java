@@ -39,6 +39,7 @@ public class LdapUserMapping {
   private final String request;
   private final String realNameAttribute;
   private final String emailAttribute;
+  private final boolean acceptBlankDN;
 
   /**
    * Constructs mapping from Sonar settings.
@@ -52,6 +53,8 @@ public class LdapUserMapping {
       }
     }
 
+    acceptBlankDN = settings.getBoolean(settingsPrefix +".user.acceptBlankDn");
+    Loggers.get(LdapUserMapping.class).info("acceptBlankDN: {}", acceptBlankDN);
     String objectClass = settings.getString(settingsPrefix + ".user.objectClass");
     String loginAttribute = settings.getString(settingsPrefix + ".user.loginAttribute");
 
@@ -126,6 +129,10 @@ public class LdapUserMapping {
       .add("realNameAttribute", getRealNameAttribute())
       .add("emailAttribute", getEmailAttribute())
       .toString();
+  }
+
+  public boolean isAcceptBlankDN() {
+	  return acceptBlankDN;
   }
 
 }
